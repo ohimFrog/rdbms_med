@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Info Translator</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1 data-i18n="appTitle">💊 Medicine Info Translator</h1>
+            <p data-i18n="appDesc">Upload a photo of your Korean medicine to get translated information.</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="drop-zone" id="dropZone">
+                    <span class="icon">📷</span>
+                    <p data-i18n="dropZoneText">Drag & Drop or Click to Upload</p>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <img id="imagePreview" class="hidden">
+                </div>
+
+                <div class="controls">
+                    <label for="langSelect" data-i18n="translateTo">Translate to:</label>
+                    <select id="langSelect">
+                        <option value="en">English</option>
+                        <option value="ko">한국어 (Korean)</option>
+                        <option value="zh-CN">简体字</option>
+                        <option value="de">German</option>
+                        <option value="ca">Catalan</option>
+                    </select>
+                    <button id="uploadBtn" disabled data-i18n="analyzeBtn">Analyze Medicine</button>
+                </div>
+            </div>
+
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p data-i18n="analyzing">Analyzing image and searching database...</p>
+            </div>
+
+            <div id="result" class="hidden">
+                <div class="drug-header">
+                    <h2 id="drugName">Drug Name</h2>
+                    <span class="badge" id="manufacturer">Manufacturer</span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="card">
+                        <h3 data-i18n="effectLabel">📋 Effect & Efficacy</h3>
+                        <p id="drugEffect"></p>
+                    </div>
+                    <div class="card">
+                        <h3 data-i18n="dosageLabel">💊 Dosage & Usage</h3>
+                        <p id="drugDosage"></p>
+                    </div>
+                    <div class="card warning">
+                        <h3 data-i18n="precautionLabel">⚠️ Precautions</h3>
+                        <p id="drugPrecaution"></p>
+                    </div>
+                    <div class="card warning">
+                        <h3 data-i18n="sideEffectLabel">❌ Side Effects</h3>
+                        <p id="drugSideEffect"></p>
+                    </div>
+                    <div class="card">
+                        <h3 data-i18n="storageLabel">📦 Storage</h3>
+                        <p id="drugStorage"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error" class="hidden">
+                <p id="errorMessage"></p>
+            </div>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
