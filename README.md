@@ -2,15 +2,15 @@
 
 A web application that translates Korean medicine information into multiple languages.
 
-## 📋 Key Features
+##  Key Features
 
-- 🤖 **Hybrid OCR**: Google Gemini API (primary) + EasyOCR (fallback) dual system
-- 🔍 **Text Search**: Direct drug name search with Fuzzy Matching
-- 🌐 **Multi-language Translation**: Korean, English, Chinese, German, Catalan support
-- 📚 **Search History**: Client-side localStorage-based history (max 20 items)
-- 🎨 **Premium Design**: Dark mode glassmorphism UI
+-  **Hybrid OCR**: Google Gemini API (primary) + EasyOCR (fallback) dual system
+-  **Text Search**: Direct drug name search with Fuzzy Matching
+-  **Multi-language Translation**: Korean, English, Chinese, German, Catalan support
+-  **Search History**: Client-side localStorage-based history (max 20 items)
+-  **Premium Design**: Dark mode glassmorphism UI
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Environment Setup
 
