@@ -4,81 +4,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Upload a photo of your Korean medicine to get translated information in your language.">
+    <meta name="theme-color" content="#0f0f23">
     <title>Medicine Info Translator</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=6">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <header>
-            <h1 data-i18n="appTitle">💊 Medicine Info Translator</h1>
-            <p data-i18n="appDesc">Upload a photo of your Korean medicine to get translated information.</p>
+            <div class="header-content">
+                <div>
+                    <h1 data-i18n="appTitle">💊 Medicine Info Translator</h1>
+                    <p data-i18n="appDesc">Upload a photo of your Korean medicine to get translated information.</p>
+                </div>
+                <div class="header-buttons" id="headerButtons" style="display: none;">
+                    <button id="statsBtn" class="stats-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="12" width="4" height="9"></rect>
+                            <rect x="10" y="8" width="4" height="13"></rect>
+                            <rect x="17" y="4" width="4" height="17"></rect>
+                        </svg>
+                        Stats
+                    </button>
+                    <button id="historyBtn" class="history-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        History
+                    </button>
+                </div>
+            </div>
         </header>
 
         <main>
-            <div class="upload-section">
-                <div class="drop-zone" id="dropZone">
-                    <span class="icon">📷</span>
-                    <p data-i18n="dropZoneText">Drag & Drop or Click to Upload</p>
-                    <input type="file" id="fileInput" accept="image/*" hidden>
-                    <img id="imagePreview" class="hidden">
+            <!-- Step 1: Language Selection -->
+            <div id="language-selection-view" class="view">
+                <h2 class="view-title" data-i18n="languageTitle">Choose Your Language</h2>
+                <div id="language-grid" class="language-grid">
+                    <!-- Languages will be dynamically inserted here by JS -->
                 </div>
+            </div>
 
-                <div class="controls">
-                    <label for="langSelect" data-i18n="translateTo">Translate to:</label>
-                    <select id="langSelect">
-                        <option value="en">English</option>
-                        <option value="ko">한국어 (Korean)</option>
-                        <option value="zh-CN">简体字</option>
-                        <option value="de">German</option>
-                        <option value="ca">Catalan</option>
-                    </select>
+            <!-- History View -->
+            <div id="history-view" class="view hidden">
+                <button id="back-from-history" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span data-i18n="backBtn">Back</span>
+                </button>
+                <h2 class="view-title">Search History</h2>
+                <div id="history-list" class="history-list-container">
+                    <div class="empty-state">No search history yet.</div>
+                </div>
+            </div>
+
+            <!-- Statistics View -->
+            <div id="statistics-view" class="view hidden">
+                <button id="back-from-stats" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span data-i18n="backBtn">Back</span>
+                </button>
+                <h2 class="view-title" data-i18n="statsTitle">📊 Manufacturer Statistics</h2>
+                <p class="stats-subtitle" data-i18n="statsSubtitle">Click on a manufacturer to see their drugs</p>
+                <div id="stats-list" class="stats-list-container">
+                    <div class="loading-state">Loading statistics...</div>
+                </div>
+            </div>
+
+            <!-- Manufacturer Drugs View -->
+            <div id="manufacturer-drugs-view" class="view hidden">
+                <button id="back-from-drugs" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span>Back to Statistics</span>
+                </button>
+                <h2 class="view-title" id="manufacturer-drugs-title">Drugs by Manufacturer</h2>
+                <div id="drugs-list" class="drugs-list-container">
+                    <div class="loading-state">Loading drugs...</div>
+                </div>
+            </div>
+
+            <!-- Alternatives View (for foreign medicines) -->
+            <div id="alternatives-view" class="view hidden">
+                <button id="back-from-alternatives" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span data-i18n="backBtn">Back</span>
+                </button>
+                <h2 class="view-title">🌍 <span data-i18n="alternativesTitle">Alternative Medicines</span></h2>
+                <p id="alternatives-message" class="alternatives-subtitle"></p>
+                <div id="alternatives-list" class="alternatives-list-container">
+                    <div class="loading-state">Searching for alternatives...</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Upload Image -->
+            <div id="upload-view" class="view hidden">
+                <button id="back-to-lang" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span data-i18n="backBtn">Back</span>
+                </button>
+
+                <div class="upload-section">
+                    <div class="drop-zone" id="dropZone">
+                        <span class="icon">📸</span>
+                        <p data-i18n="dropZoneText">Drag & Drop or Click to Upload</p>
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <img id="imagePreview" class="hidden" alt="Preview">
+                    </div>
                     <button id="uploadBtn" disabled data-i18n="analyzeBtn">Analyze Medicine</button>
                 </div>
-            </div>
 
-            <div id="loading" class="hidden">
-                <div class="spinner"></div>
-                <p data-i18n="analyzing">Analyzing image and searching database...</p>
-            </div>
+                <div class="divider" data-i18n="orDivider">OR</div>
 
-            <div id="result" class="hidden">
-                <div class="drug-header">
-                    <h2 id="drugName">Drug Name</h2>
-                    <span class="badge" id="manufacturer">Manufacturer</span>
-                </div>
-
-                <div class="info-grid">
-                    <div class="card">
-                        <h3 data-i18n="effectLabel">📋 Effect & Efficacy</h3>
-                        <p id="drugEffect"></p>
-                    </div>
-                    <div class="card">
-                        <h3 data-i18n="dosageLabel">💊 Dosage & Usage</h3>
-                        <p id="drugDosage"></p>
-                    </div>
-                    <div class="card warning">
-                        <h3 data-i18n="precautionLabel">⚠️ Precautions</h3>
-                        <p id="drugPrecaution"></p>
-                    </div>
-                    <div class="card warning">
-                        <h3 data-i18n="sideEffectLabel">❌ Side Effects</h3>
-                        <p id="drugSideEffect"></p>
-                    </div>
-                    <div class="card">
-                        <h3 data-i18n="storageLabel">📦 Storage</h3>
-                        <p id="drugStorage"></p>
-                    </div>
+                <div class="text-search-section">
+                    <input type="text" id="textSearchInput" placeholder="Enter Korean drug name (e.g. 타이레놀)"
+                        class="search-input" data-i18n-placeholder="searchPlaceholder">
+                    <button id="textSearchBtn" data-i18n="searchBtn">Search</button>
                 </div>
             </div>
 
-            <div id="error" class="hidden">
-                <p id="errorMessage"></p>
+            <!-- Step 3: Result Display -->
+            <div id="result-view" class="view hidden">
+                <button id="start-over" class="back-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                    <span data-i18n="startOverBtn">Start Over</span>
+                </button>
+
+                <div id="loading" class="hidden">
+                    <div class="spinner"></div>
+                    <p data-i18n="analyzing">Analyzing image and searching database...</p>
+                </div>
+
+                <div id="result" class="hidden">
+                    <div class="drug-header">
+                        <h2 id="drugName">Drug Name</h2>
+                        <span class="badge" id="manufacturer">Manufacturer</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="card">
+                            <h3 data-i18n="effectLabel">📋 Effect & Efficacy</h3>
+                            <p id="drugEffect"></p>
+                        </div>
+                        <div class="card">
+                            <h3 data-i18n="dosageLabel">💊 Dosage & Usage</h3>
+                            <p id="drugDosage"></p>
+                        </div>
+                        <div class="card warning">
+                            <h3 data-i18n="precautionLabel">⚠️ Precautions</h3>
+                            <p id="drugPrecaution"></p>
+                        </div>
+                        <div class="card warning">
+                            <h3 data-i18n="sideEffectLabel">❌ Side Effects</h3>
+                            <p id="drugSideEffect"></p>
+                        </div>
+                        <div class="card">
+                            <h3 data-i18n="storageLabel">📦 Storage</h3>
+                            <p id="drugStorage"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="error" class="hidden">
+                    <p id="errorMessage"></p>
+                </div>
             </div>
-        </main>
     </div>
-    <script src="/static/script.js"></script>
+    </main>
+    </div>
+    <script src="/static/script.js?v=5"></script>
 </body>
 
 </html>

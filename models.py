@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -23,6 +24,7 @@ class DrugBasic(Base):
     usage = relationship("DrugUsage", uselist=False, back_populates="drug")
     warning = relationship("DrugWarning", uselist=False, back_populates="drug")
     side_effect = relationship("DrugSideEffect", uselist=False, back_populates="drug")
+    search_history = relationship("SearchHistory", back_populates="drug")
 
 class DrugUsage(Base):
     __tablename__ = 'drug_usage'
@@ -52,3 +54,13 @@ class DrugSideEffect(Base):
     side_effect = Column(Text)
     
     drug = relationship("DrugBasic", back_populates="side_effect")
+
+class SearchHistory(Base):
+    __tablename__ = 'search_history'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    drug_id = Column(Integer, ForeignKey('drug_basic.id'), nullable=False)
+    searched_text = Column(Text, nullable=True)
+    searched_at = Column(TIMESTAMP, server_default=func.now())
+
+    drug = relationship("DrugBasic", back_populates="search_history")

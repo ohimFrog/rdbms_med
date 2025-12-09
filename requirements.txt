@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+python-dotenv
+requests
+deep-translator
+thefuzz[speedup]
+pandas
+python-multipart
+cryptography
